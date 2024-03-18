@@ -1,6 +1,8 @@
 from tkinter import Tk, Label, Button
+import tkinter.filedialog as fd
 from tkinter.constants import BOTTOM, END, LEFT, N, W
 from tkinter.scrolledtext import ScrolledText
+from backend import saveFile, getCurrentPath, setCurrentPath
 
 
 class Application:
@@ -49,6 +51,7 @@ class Application:
         save = Button(
             master=self.root,
             text="Save",
+            command=self.saveBuffer,
             font=text_font,
             width=10,
             height=1,
@@ -57,6 +60,7 @@ class Application:
         save_as = Button(
             master=self.root,
             text="Save As",
+            command=lambda: self.saveBuffer(new_path=True),
             font=text_font,
             width=10,
             height=1,
@@ -70,6 +74,13 @@ class Application:
         open_file.pack(side=LEFT, anchor=N)
         save.pack(side=LEFT, anchor=N)
         save_as.pack(side=LEFT, anchor=N)
+
+    def saveBuffer(self, new_path: bool = False):
+        if getCurrentPath() == "" or new_path:
+            save_path: str = fd.asksaveasfilename()
+            setCurrentPath(save_path)
+
+        saveFile(self.buffer.get("1.0", END))
 
     def clearBuffer(self):
         self.buffer.delete("1.0", END)
