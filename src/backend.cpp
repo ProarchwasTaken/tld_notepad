@@ -7,13 +7,11 @@ using std::string, std::ofstream;
 
 string _current_path = "";
 
-
-string getCurrentPath() {
-  return _current_path;
-}
-
+string getCurrentPath() { return _current_path; }
 
 void setCurrentPath(string file_path) {
+  if (file_path == "") return;
+
   _current_path = file_path;
 }
 
@@ -38,7 +36,9 @@ PYBIND11_MODULE(backend, m) {
   m.doc() = "The backend code for the notepad application.";
 
   m.def("saveFile", &saveFile, 
-        "Saves the current buffer to specified path");
+        "For saving the current buffer to the current path and\n"
+        "filename. Should be called whenever the user clicks the\n"
+        "'Save' or 'Save As' buttons.");
 
   m.def("getCurrentPath", &getCurrentPath,
         "Gets the current path and file name of which the buffer will\n"

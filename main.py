@@ -13,10 +13,10 @@ class Application:
         self.root.geometry("600x400")
         self.root.resizable(width=False, height=False)
 
-        self.setupWidgit()
+        self.setupWidgits()
         self.root.mainloop()
 
-    def setupWidgit(self):
+    def setupWidgits(self):
         self.buffer = ScrolledText(
             self.root,
             width=70, 
@@ -76,6 +76,10 @@ class Application:
         save_as.pack(side=LEFT, anchor=N)
 
     def saveBuffer(self, new_path: bool = False):
+        """For saving the current buffer as an usable file. This is done
+        by calling a function from the backend. File dialog only opens
+        if the current path is empty, or the user clicks the 'Save As'
+        button."""
         if getCurrentPath() == "" or new_path:
             save_path: str = fd.asksaveasfilename()
             setCurrentPath(save_path)
