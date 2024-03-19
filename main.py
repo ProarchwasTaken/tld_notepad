@@ -2,11 +2,14 @@ from tkinter import Tk, Label, Button
 import tkinter.filedialog as fd
 from tkinter.constants import BOTTOM, END, LEFT, N, W
 from tkinter.scrolledtext import ScrolledText
-from backend import saveFile, getCurrentPath, setCurrentPath
+from backend import (saveFile, getCurrentPath, setCurrentPath, 
+    getFileContents)
 
 
 class Application:
-    """Notepad clone capable of opening and saving files."""
+    """Notepad clone capable of opening and saving files. Not gonna lie,
+    I had a good time building this program, and I learned a lot of stuff
+    from it."""
     def __init__(self) -> None:
         self.root = Tk()
         self.root.title("Tyler's Notepad")
@@ -14,7 +17,10 @@ class Application:
         self.root.resizable(width=False, height=False)
 
         self.setupWidgits()
+
+        print("Everything is good to go! Now beginning main loop.")
         self.root.mainloop()
+        print("Cya next time!")
 
     def setupWidgits(self):
         self.buffer = ScrolledText(
@@ -34,8 +40,8 @@ class Application:
         new_file = Button(
             master=self.root,
             text="New File",
-            font=text_font,
             command=self.clearBuffer,
+            font=text_font,
             width=10,
             height=1,
             borderwidth=5
@@ -43,6 +49,7 @@ class Application:
         open_file = Button(
             master=self.root,
             text="Open File",
+            command=self.openFile,
             font=text_font,
             width=10,
             height=1,
@@ -80,13 +87,30 @@ class Application:
         by calling a function from the backend. File dialog only opens
         if the current path is empty, or the user clicks the 'Save As'
         button."""
+
         if getCurrentPath() == "" or new_path:
             save_path: str = fd.asksaveasfilename()
             setCurrentPath(save_path)
 
         saveFile(self.buffer.get("1.0", END))
 
-    def clearBuffer(self):
+    def openFile(self):
+        """For loading up a given file and inserting it's contents into
+        the buffer. Not before clearing it though."""
+
+        file: str = fd.askopenfilename()
+        setCurrentPath(file)
+        file_contents: str = getFileContents()
+
+        self.clearBuffer(clear_path=False)
+        self.buffer.insert("1.0", file_contents)
+
+    def clearBuffer(self, clear_path: bool = True):
+        """It's self explanatory. It also clears the current path by
+        default unless specified otherwise."""
+
+        if clear_path:
+            setCurrentPath("", force=True)
         self.buffer.delete("1.0", END)
 
 
